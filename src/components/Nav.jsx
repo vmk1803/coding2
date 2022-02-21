@@ -1,4 +1,9 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
+import { sortData } from "../redux/actions";
 
 const NavDiv = styled.div`
   display: flex;
@@ -18,11 +23,47 @@ const NavDiv = styled.div`
 `;
 
 export const NavBar = () => {
+  let [text, setText] = useState();
+  let { data, sortedData } = useSelector((store) => store);
+  const dispatch = useDispatch();
+
+  function handleSort(e) {
+    let sorted = [];
+    data.forEach((item) => {
+      if (item.title === text) {
+        sorted.push(item);
+      }
+    });
+
+    dispatch(sortData(sorted));
+  }
+
+  function handlePress(e) {
+    if (e.code === "Enter") {
+      let sorted = [];
+      data.forEach((item) => {
+        if (item.title === text) {
+          sorted.push(item);
+        }
+      });
+
+      dispatch(sortData(sorted));
+    }
+  }
+
   return (
     <NavDiv id="navbar">
       <h2>Google</h2>
-      <input type="text" />
-      <button className="search">Search</button>
+      <input
+        type="text"
+        onChange={(e) => {
+          setText(e.target.value);
+        }}
+        onKeyPress={handlePress}
+      />
+      <button className="search" onClick={handleSort}>
+        Search
+      </button>
     </NavDiv>
   );
 };

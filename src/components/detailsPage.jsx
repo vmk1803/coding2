@@ -12,7 +12,7 @@ export const DetailsPage = () => {
   const dispatch = useDispatch();
   let store = useSelector((store) => store.sortedData);
   let [data, setData] = useState(store);
-  console.log(store);
+  // console.log(store);
 
   useEffect(() => {
     getData();
