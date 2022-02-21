@@ -11,6 +11,8 @@ export const DetailsPage = () => {
   let query = searchParams.get("q");
   const dispatch = useDispatch();
   let store = useSelector((store) => store.sortedData);
+  let [data, setData] = useState(store);
+  console.log(store);
 
   useEffect(() => {
     getData();
@@ -43,7 +45,8 @@ export const DetailsPage = () => {
         return -1;
       }
     });
-    dispatch(sortData(sortingData));
+
+    setData(sortingData);
   }
 
   function handleAlphaDesc() {
@@ -57,7 +60,66 @@ export const DetailsPage = () => {
       }
     });
 
-    dispatch(sortData(sortingData));
+    setData(sortingData);
+  }
+
+  function handleDate() {
+    let sortingData = store;
+
+    sortingData.sort((a, b) => {
+      a = a.creation_date;
+      b = b.creation_date;
+      return a - b;
+    });
+
+    setData(sortingData);
+    console.log(sortingData);
+  }
+
+  function handleDataDesc() {
+    let sortingData = store;
+
+    sortingData.sort((a, b) => {
+      a = a.creation_date;
+      b = b.creation_date;
+      return b - a;
+    });
+
+    setData(sortingData);
+    console.log(sortingData);
+  }
+
+  function handleQuality() {
+    let sortingData = store;
+
+    sortingData.sort((a, b) => {
+      a = a.quality;
+      b = b.quality;
+      return a - b;
+    });
+  }
+
+  function handleQualityDesc() {
+    let sortingData = store;
+
+    sortingData.sort((a, b) => {
+      a = a.quality;
+      b = b.quality;
+      return b - a;
+    });
+  }
+
+  function handleExplicit() {
+    let sortingData = store;
+    let sorted = [];
+
+    sortingData.map((e) => {
+      if (e.explicit === true) {
+        sorted.push(e);
+      }
+    });
+
+    setData(sorted);
   }
 
   return (
@@ -70,28 +132,54 @@ export const DetailsPage = () => {
         <button id="sort-alphabetically-desc" onClick={handleAlphaDesc}>
           Sort Z-A
         </button>
-        <button id="sort-by-date">Sort by Date (Asc)</button>
-        <button id="sort-by-date-desc">Sort by Date (Desc)</button>
-        <button id="sort-by-quality">Sort by quality (Asc)</button>
-        <button id="sort-by-quality-desc">Sort by quality (Dsc)</button>
-        <button id="filter-explicit">Filter Explicit</button>
+        <button id="sort-by-date" onClick={handleDate}>
+          Sort by Date (Asc)
+        </button>
+        <button id="sort-by-date-desc" onClick={handleDataDesc}>
+          Sort by Date (Desc)
+        </button>
+        <button id="sort-by-quality" onClick={handleQuality}>
+          Sort by quality (Asc)
+        </button>
+        <button id="sort-by-quality-desc" onClick={handleQualityDesc}>
+          Sort by quality (Dsc)
+        </button>
+        <button id="filter-explicit" onClick={handleExplicit}>
+          Filter Explicit
+        </button>
       </div>
       <div id="search-result">
-        {store.map((e) => (
-          <div className="result" key={e.id}>
-            <p>{e.url}</p>
-            <h3>
-              <Link to={`/page/${e.id}`}>
-                {e.title} | {e.author}
-              </Link>
-            </h3>
-            <p>{e.description}</p>
-            <h4>{e.creation_date}</h4>
-            <h4>
-              Explicit : {e.explicit ? "Yes" : "No"} Quality : {e.quality} %
-            </h4>
-          </div>
-        ))}
+        {data.length != 0
+          ? data.map((e) => (
+              <div className="result" key={e.id}>
+                <p>{e.url}</p>
+                <h2>
+                  <Link to={`/page/${e.id}`}>
+                    {e.title} | {e.author}
+                  </Link>
+                </h2>
+                <p>{e.description}</p>
+                <h3>{e.creation_date}</h3>
+                <h3>
+                  Explicit :{e.explicit ? "Yes" : "No"} Quality : {e.quality}%
+                </h3>
+              </div>
+            ))
+          : store.map((e) => (
+              <div className="result" key={e.id}>
+                <p>{e.url}</p>
+                <h2>
+                  <Link to={`/page/${e.id}`}>
+                    {e.title} | {e.author}
+                  </Link>
+                </h2>
+                <p>{e.description}</p>
+                <h3>{e.creation_date}</h3>
+                <h3>
+                  Explicit :{e.explicit ? "Yes" : "No"} Quality : {e.quality}%
+                </h3>
+              </div>
+            ))}
       </div>
     </div>
   );
